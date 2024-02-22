@@ -5,7 +5,15 @@ from flask import Flask
 
 def create_app(test_config=None):
     # create and configure the app
-    app = Flask(__name__, instance_relative_config=True)
+    app = Flask(
+        __name__, 
+        instance_relative_config=True, 
+        instance_path=os.path.join(__path__[0], 'instance')
+    )
+    
+    # print(app.instance_path)
+    # print(__path__)
+    # exit()
     app.config.from_mapping(
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
@@ -28,5 +36,9 @@ def create_app(test_config=None):
     @app.route('/hello')
     def hello():
         return 'Hello, World!'
+
+
+    from . import db
+    db.init_app(app)
 
     return app
