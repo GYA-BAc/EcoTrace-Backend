@@ -84,3 +84,15 @@ def login():
 def logout():
     session.clear()
     return 'Success', 200
+
+
+# decorator to check for login
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return "Unauthorized", 401
+
+        return view(**kwargs)
+
+    return wrapped_view
