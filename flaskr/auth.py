@@ -40,6 +40,30 @@ def register():
         )
         db.commit()
     except db.IntegrityError:
-        return f"User {username} is already registered", 400
+        return f"User {username} is already registered", 200
     
-    return redirect(url_for("auth.login"))
+    return "Created account", 201
+
+
+
+@bp.route('/login', methods=('POST'))
+def login():
+    if request.method != 'POST':
+        return "Request must be POST method", 400
+    
+    username = request.form['username']
+    password = request.form['password']
+    db = get_db()
+    user = db.execute(
+        'SELECT * FROM user WHERE username = ?', (username,)
+    ).fetchone()
+
+    if user is None:
+        return 'Incorrect username', 401
+    elif not check_password_hash(user['password'], password):
+        return 'Incorrect password', 401
+
+    session.clear()
+    session['user_id'] = user['id']
+    
+    return 'Success', 200
