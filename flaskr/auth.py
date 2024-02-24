@@ -11,7 +11,7 @@ from flaskr.db import get_db
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-@bp.route('/register', methods=('POST'))
+@bp.route('/register', methods=['POST'])
 def register():
     if request.method != 'POST':
         return "Request must be POST method", 400
@@ -50,7 +50,7 @@ def load_logged_in_user():
         ).fetchone()
 
 
-@bp.route('/login', methods=('POST'))
+@bp.route('/login', methods=['POST'])
 def login():
     if request.method != 'POST':
         return "Request must be POST method", 400
