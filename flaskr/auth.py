@@ -8,6 +8,8 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 from flaskr.db import get_db
 
+# this works:
+# curl --json "{\"username\":\"asdf\", \"password\":\"asdf\"}" http://127.0.0.1:5000/auth/register
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
@@ -15,9 +17,10 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 def register():
     if request.method != 'POST':
         return "Request must be POST method", 400
+    # print(request.json)
 
-    username = request.form['username']
-    password = request.form['password']
+    username = request.json['username']
+    password = request.json['password']
     db = get_db()
 
 
