@@ -69,9 +69,9 @@ def login():
     ).fetchone()
 
     if user is None:
-        return jsonify({'msg': 'Incorrect username'}), 401
+        return jsonify({'msg': 'Unauthorized'}), 401
     elif not check_password_hash(user['password'], password):
-        return jsonify({'msg': 'Incorrect password'}), 401
+        return jsonify({'msg': 'Unauthorized'}), 401
 
     session.clear()
     session['user_id'] = user['id']
@@ -92,7 +92,7 @@ def login_required(view):
     @functools.wraps(view)
     def wrapped_view(**kwargs):
         if g.user is None:
-            return "Unauthorized", 401
+            return jsonify({'msg': "Unauthorized"}), 401
 
         return view(**kwargs)
 
