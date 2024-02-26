@@ -72,8 +72,9 @@ def login():
     elif not check_password_hash(user['password'], password):
         return 'Incorrect password', 401
 
-    session.clear()
-    session['user_id'] = user['id']
+    # session.clear()
+    # session['user_id'] = user['id']
+    # TODO: Add authentication sessions and tokens, maybe google?
 
     return 'Success', 200
 
