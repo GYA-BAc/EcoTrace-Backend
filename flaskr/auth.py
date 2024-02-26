@@ -4,6 +4,7 @@ from flask import (
     g, 
     request, 
     session, 
+    jsonify
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 from flaskr.db import get_db
@@ -17,7 +18,7 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 @bp.route('/register', methods=['POST'])
 def register():
     if request.method != 'POST':
-        return "Request must be POST method", 400
+        return jsonify({'msg': 'Request must be POST method'}), 400
     # print(request.json)
 
     username = request.json['username']
@@ -26,9 +27,9 @@ def register():
 
 
     if not username:
-        return 'Username Required', 400
+        return jsonify({'msg': 'Username Required'}), 400
     elif not password:
-        return 'Password Required', 400
+        return jsonify({'msg': 'Password Required'}), 400
 
     try:
         db.execute(
@@ -39,7 +40,7 @@ def register():
     except db.IntegrityError:
         return f"User {username} is already registered", 200
     
-    return "Created account", 201
+    return jsonify({'msg': "Created account"}), 201
 
 
 @bp.before_app_request
@@ -68,21 +69,21 @@ def login():
     ).fetchone()
 
     if user is None:
-        return 'Incorrect username', 401
+        return jsonify({'msg': 'Incorrect username'}), 401
     elif not check_password_hash(user['password'], password):
-        return 'Incorrect password', 401
+        return jsonify({'msg': 'Incorrect password'}), 401
 
     # session.clear()
     # session['user_id'] = user['id']
     # TODO: Add authentication sessions and tokens, maybe google?
 
-    return 'Success', 200
+    return jsonify({'msg': 'Success'}), 200
 
 
 @bp.route('/logout')
 def logout():
     session.clear()
-    return 'Success', 200
+    return jsonify({'msg': 'Success'}), 200
 
 
 # decorator to check for login
