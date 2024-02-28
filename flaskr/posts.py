@@ -64,7 +64,6 @@ def create():
         return jsonify({'msg': "Post body and or image required"}), 400
 
     db = get_db()
-    print(image, body)
 
     image_id = None
     if (image):
@@ -86,6 +85,7 @@ def create():
         ' VALUES (?, ?, ?, ?)',
         (title, (body if body else None), (image_id if image else None), g.user['id'])
     )
+    print((title, (body if body else None), (image_id if image else None), g.user['id']))
     db.commit()
 
     return jsonify({'msg': "Success"}), 201
