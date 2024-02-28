@@ -3,9 +3,10 @@ from flask import (
     Blueprint, 
     request, 
     jsonify,
-    abort
+    g
 )
 from flaskr.db import get_db
+from sqlite3 import Cursor
 
 from auth import login_required
 
@@ -66,13 +67,29 @@ def create():
     if (not body and not image):
         return jsonify({'msg', "Post body and or image required"}), 400
 
-    # db = get_db()
-    # db.execute(
-    #     'INSERT INTO post (title, body, author_id)'
-    #     ' VALUES (?, ?, ?)',
-    #     (title, body, g.user['id'])
-    # )
-    # db.commit()
+    db = get_db()
+    
+    image_id = None
+    if (image):
+        cursor: Cursor = db.execute(
+            'INSERT INTO images (author_id, data_url)'
+            ' VALUES (?, ?)',
+            ' RETURNING id',
+            (g.user['id'], image)
+        )
+        row = cursor.fetchone()
+
+        if (row is None):
+            return jsonify({'msg', "Failed saving image"}), 501
+        
+        (image_id, ) = row
+    
+    db.execute(
+        'INSERT INTO post (title, body, image_id, author_id)'
+        ' VALUES (?, ?, ?, ?)',
+        (title, (body if body else None), (image_id if image else None), g.user['id'])
+    )
+    db.commit()
 
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
