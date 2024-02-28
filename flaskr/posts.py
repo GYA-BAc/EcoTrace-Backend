@@ -1,4 +1,3 @@
-import functools
 from flask import (
     Blueprint, 
     request, 
@@ -8,7 +7,7 @@ from flask import (
 from flaskr.db import get_db
 from sqlite3 import Cursor
 
-from auth import login_required
+from . import auth
 
 
 bp = Blueprint('posts', __name__, url_prefix='/posts')
@@ -49,23 +48,24 @@ def fetchUserPosts():
 
 
 @bp.route('/create', methods=['POST'])
-@login_required()
+@auth.login_required
 def create():
     if request.method != 'POST':
         return "Request must be POST method", 400
 
-    title = request.form['title']
-    body = request.form['body']
-    image = request.form['image']
+    title = request.json['title']
+    body = request.json['body']
+    image = request.json['image']
 
     if (not title):
-        return jsonify({'msg', "A title is required"}), 400
+        return jsonify({'msg': "A title is required"}), 400
     
     if (not body and not image):
-        return jsonify({'msg', "Post body and or image required"}), 400
+        return jsonify({'msg': "Post body and or image required"}), 400
 
     db = get_db()
-    
+    print(image, body)
+
     image_id = None
     if (image):
         cursor: Cursor = db.execute(
@@ -88,9 +88,11 @@ def create():
     )
     db.commit()
 
+    return jsonify({'msg': "Success"}), 201
+
 
 @bp.route('/<int:id>/delete', methods=('POST',))
-@login_required
+@auth.login_required
 def delete(id):
 
     if (get_post(id) is None):
