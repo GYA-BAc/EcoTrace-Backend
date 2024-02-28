@@ -32,15 +32,15 @@ def fetchUserGroups():
 
     db = get_db()
 
-    author_id = db.execute(
+    user_id = db.execute(
         'SELECT * FROM user WHERE username = ?', (username,)
     ).fetchone()['id']
 
-    if (not author_id):
+    if (not user_id):
         return jsonify({'msg': "User not found"}), 404
 
     groups = db.execute(
-        'SELECT * FROM userGroup WHERE author_id = ?', (author_id,)
+        'SELECT * FROM userGroup WHERE user_id = ?', (user_id,)
     ).fetchall()
 
     return jsonify([dict(_) for _ in groups]), 200

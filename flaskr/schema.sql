@@ -13,10 +13,10 @@ CREATE TABLE user (
 
 CREATE TABLE post (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  author_id INTEGER NOT NULL,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   title TEXT NOT NULL,
   body TEXT,
+  author_id INTEGER NOT NULL,
   image_id INTEGER,
   group_id INTEGER,
   FOREIGN KEY (author_id) REFERENCES user (id),
@@ -26,14 +26,19 @@ CREATE TABLE post (
 
 CREATE TABLE images (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  author_id INTEGER NOT NULL,
   data_url TEXT NOT NULL,
+  author_id INTEGER NOT NULL,
   FOREIGN KEY (author_id) REFERENCES user (id)
 );
 
 CREATE TABLE group (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
-  info TEXT NOT NULL
+  created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  title TEXT NOT NULL
+  author_id INTEGER NOT NULL,
+  image_id INTEGER,
+  FOREIGN KEY (author_id) REFERENCES user (id),
+  FOREIGN KEY (image_id) REFERENCES images (id),
 );
 
 -- relational tables
