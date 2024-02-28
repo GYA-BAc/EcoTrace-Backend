@@ -1,5 +1,6 @@
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS post;
+DROP TABLE IF EXISTS images;
 
 CREATE TABLE user (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -13,6 +14,14 @@ CREATE TABLE post (
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   title TEXT NOT NULL,
   body TEXT,
-  image_path TEXT,
-  FOREIGN KEY (author_id) REFERENCES user (id)
+  image_id INTEGER,
+  FOREIGN KEY (author_id) REFERENCES user (id),
+  FOREIGN KEY (image_id) REFERENCES images (id)
+);
+
+CREATE TABLE images (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  author_id INTEGER NOT NULL,
+  data_url TEXT NOT NULL,
+  FOREIGN KEY (author_id) REFERENCES user (id),
 );

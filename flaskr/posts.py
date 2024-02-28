@@ -2,7 +2,8 @@ import functools
 from flask import (
     Blueprint, 
     request, 
-    jsonify
+    jsonify,
+    abort
 )
 from flaskr.db import get_db
 
@@ -54,3 +55,19 @@ def fetchUserPosts():
 def add():
     pass
     # request.json[]
+
+
+def get_post(id):
+    post = get_db().execute(
+        'SELECT p.id, title, body, created, author_id, username'
+        ' FROM post p JOIN user u ON p.author_id = u.id'
+        ' WHERE p.id = ?',
+        (id,)
+    ).fetchone()
+
+    if (post is None):
+        return jsonify({'msg', "Post not found"}), 404
+    
+    return post
+
+
