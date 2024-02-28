@@ -22,7 +22,7 @@ def fetch():
     if (post is None):
         return jsonify({'msg', "Post not found"}), 404
 
-    return jsonify(post), 200
+    return jsonify(dict(post)), 200
 
 
 @bp.route('/fetchUserPosts', methods=['GET'])
@@ -42,8 +42,6 @@ def fetchUserPosts():
     posts = db.execute(
         'SELECT * FROM post WHERE author_id = ?', (author_id,)
     ).fetchall()
-
-    print()
 
     return jsonify([dict(_) for _ in posts]), 200
 
@@ -93,22 +91,23 @@ def create():
     return jsonify({'msg': "Success"}), 201
 
 
-@bp.route('/<int:id>/delete', methods=('POST',))
+@bp.route('/delete', methods=('POST',))
 @auth.login_required
-def delete(id):
+def delete():
+    id = request.json['id']
 
     if (get_post(id) is None):
-        return jsonify({'msg', 'Post not found'}), 404
+        return jsonify({'msg': 'Post not found'}), 404
     
     db = get_db()
     db.execute('DELETE FROM post WHERE id = ?', (id,))
     db.commit()
-    return jsonify({'msg', 'Success'}), 200
+    return jsonify({'msg': 'Success'}), 200
 
 
 def get_post(id):
     post = get_db().execute(
-        'SELECT p.id, title, body, created, author_id, username'
+        'SELECT p.id, title, body, created, author_id, username, image_id'
         ' FROM post p JOIN user u ON p.author_id = u.id'
         ' WHERE p.id = ?',
         (id,)
