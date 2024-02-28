@@ -3,7 +3,6 @@ from flask import (
     Blueprint, 
     request, 
     jsonify,
-    abort,
     g
 )
 from flaskr.db import get_db
