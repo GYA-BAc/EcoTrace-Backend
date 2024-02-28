@@ -23,5 +23,5 @@ CREATE TABLE images (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   author_id INTEGER NOT NULL,
   data_url TEXT NOT NULL,
-  FOREIGN KEY (author_id) REFERENCES user (id),
+  FOREIGN KEY (author_id) REFERENCES user (id)
 );
