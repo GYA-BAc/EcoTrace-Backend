@@ -111,6 +111,8 @@ def get_post(id):
         (id,)
     ).fetchone()
 
+    #TODO ensure post's user exist
+
     return post
 
 
