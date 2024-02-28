@@ -43,7 +43,9 @@ def fetchUserPosts():
         'SELECT * FROM post WHERE author_id = ?', (author_id,)
     ).fetchall()
 
-    return jsonify(posts)
+    print()
+
+    return jsonify([dict(_) for _ in posts]), 200
 
 
 
