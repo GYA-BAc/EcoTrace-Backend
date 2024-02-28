@@ -50,11 +50,20 @@ def fetchUserPosts():
 
 
 
-@bp.route('/add', methods=['POST'])
-@login_required()
-def add():
-    pass
-    # request.json[]
+# @bp.route('/create', methods=['POST'])
+# @login_required()
+# def create():
+#     if (request.method != )
+
+
+@bp.route('/<int:id>/delete', methods=('POST',))
+@login_required
+def delete(id):
+    get_post(id)
+    db = get_db()
+    db.execute('DELETE FROM post WHERE id = ?', (id,))
+    db.commit()
+    return jsonify({'msg', 'Success'}), 200
 
 
 def get_post(id):
@@ -69,5 +78,6 @@ def get_post(id):
         return jsonify({'msg', "Post not found"}), 404
     
     return post
+
 
 
