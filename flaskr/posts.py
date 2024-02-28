@@ -50,11 +50,29 @@ def fetchUserPosts():
 
 
 
-# @bp.route('/create', methods=['POST'])
-# @login_required()
-# def create():
-#     if (request.method != )
+@bp.route('/create', methods=['POST'])
+@login_required()
+def create():
+    if request.method != 'POST':
+        return "Request must be POST method", 400
 
+    title = request.form['title']
+    body = request.form['body']
+    image = request.form['image']
+
+    if (not title):
+        return jsonify({'msg', "A title is required"}), 400
+    
+    if (not body and not image):
+        return jsonify({'msg', "Post body and or image required"}), 400
+
+    # db = get_db()
+    # db.execute(
+    #     'INSERT INTO post (title, body, author_id)'
+    #     ' VALUES (?, ?, ?)',
+    #     (title, body, g.user['id'])
+    # )
+    # db.commit()
 
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
