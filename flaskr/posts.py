@@ -3,6 +3,7 @@ from flask import (
     Blueprint, 
     request, 
     jsonify,
+    abort,
     g
 )
 from flaskr.db import get_db
@@ -15,16 +16,11 @@ bp = Blueprint('posts', __name__, url_prefix='/posts')
 
 @bp.route('/fetch', methods=['GET'])
 def fetch():
-    post_id = request.json['id']
-    if (not post_id):
+    id = request.json['id']
+    if (not id):
         return jsonify({'msg', "No post id specified"}), 400
 
-    db = get_db()
-
-    post = db.execute(
-        'SELECT * FROM post WHERE id = ?', (post_id,)
-    ).fetchone()
-
+    post = get_post(id)
     if (post is None):
         return jsonify({'msg', "Post not found"}), 404
 
@@ -91,10 +87,14 @@ def create():
     )
     db.commit()
 
+
 @bp.route('/<int:id>/delete', methods=('POST',))
 @login_required
 def delete(id):
-    get_post(id)
+
+    if (get_post(id) is None):
+        return jsonify({'msg', 'Post not found'}), 404
+    
     db = get_db()
     db.execute('DELETE FROM post WHERE id = ?', (id,))
     db.commit()
@@ -109,9 +109,6 @@ def get_post(id):
         (id,)
     ).fetchone()
 
-    if (post is None):
-        return jsonify({'msg', "Post not found"}), 404
-    
     return post
 
 
