@@ -38,7 +38,7 @@ def register():
         )
         db.commit()
     except db.IntegrityError:
-        return f"User {username} is already registered", 200
+        return jsonify({'msg': "User is already registered"}), 200
     
     return jsonify({'msg': "Created account"}), 201
 
