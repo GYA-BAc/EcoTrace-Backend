@@ -97,3 +97,9 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
+
+# @bp.route('/test')
+# @login_required
+# def test():
+#     return jsonify(session), 200
