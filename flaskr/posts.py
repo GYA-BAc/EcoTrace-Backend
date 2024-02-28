@@ -44,6 +44,8 @@ def fetchUserPosts():
         'SELECT * FROM post WHERE author_id = ?', (author_id,)
     ).fetchall()
 
+    return jsonify(posts)
+
 
 
 @bp.route('/create', methods=['POST'])

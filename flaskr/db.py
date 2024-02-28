@@ -4,6 +4,7 @@ import click
 from flask import current_app, g, Flask
 
 
+# flask --app flaskr init-db
 
 def init_db():
     db = get_db()
