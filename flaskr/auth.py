@@ -17,9 +17,6 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 @bp.route('/register', methods=['POST'])
 def register():
-    if request.method != 'POST':
-        return jsonify({'msg': 'Request must be POST method'}), 400
-    # print(request.json)
 
     username = request.json['username']
     password = request.json['password']
@@ -58,9 +55,7 @@ def load_logged_in_user():
         
 @bp.route('/login', methods=['POST'])
 def login():
-    if request.method != 'POST':
-        return "Request must be POST method", 400
-    
+
     username = request.json['username']
     password = request.json['password']
     db = get_db()

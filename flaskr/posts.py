@@ -20,7 +20,7 @@ def fetch():
 
     post = get_post(id)
     if (post is None):
-        return jsonify({'msg', "Post not found"}), 404
+        return jsonify({'msg': "Post not found"}), 404
 
     return jsonify(dict(post)), 200
 
@@ -37,7 +37,7 @@ def fetchUserPosts():
     ).fetchone()['id']
 
     if (not author_id):
-        return jsonify({'msg', "User not found"}), 404
+        return jsonify({'msg': "User not found"}), 404
 
     posts = db.execute(
         'SELECT * FROM post WHERE author_id = ?', (author_id,)
@@ -50,8 +50,6 @@ def fetchUserPosts():
 @bp.route('/create', methods=['POST'])
 @auth.login_required
 def create():
-    if request.method != 'POST':
-        return "Request must be POST method", 400
 
     title = request.json['title']
     body = request.json['body']
@@ -108,7 +106,7 @@ def delete():
 def get_post(id):
     post = get_db().execute(
         'SELECT *'
-        ' FROM post p JOIN user u ON p.author_id = u.id'
+        ' FROM post p'
         ' WHERE p.id = ?',
         (id,)
     ).fetchone()
