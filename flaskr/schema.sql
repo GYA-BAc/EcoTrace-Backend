@@ -2,7 +2,7 @@ DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS post;
 DROP TABLE IF EXISTS images;
 DROP TABLE IF EXISTS group;
-DROP TABLE IF EXISTS userGroups;
+DROP TABLE IF EXISTS userGroup;
 
 
 CREATE TABLE user (
@@ -38,7 +38,7 @@ CREATE TABLE group (
 
 -- relational tables
 
-CREATE TABLE userGroups (
+CREATE TABLE userGroup (
   user_id INTEGER,
   group_id INTEGER,
   PRIMARY KEY (user_id, group_id),
