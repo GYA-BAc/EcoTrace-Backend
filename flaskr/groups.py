@@ -26,6 +26,7 @@ def fetch():
 
 
 @bp.route('/fetchUserGroups', methods=['GET'])
+@auth.login_required
 def fetchUserGroups():
 
     username = request.json['username']
@@ -55,3 +56,41 @@ def get_group(id):
     ).fetchone()
 
     return group
+
+
+@bp.route('/create', methods=['POST'])
+@auth.login_required
+def create():
+
+    title = request.json['title']
+    image = request.json['image']
+
+    if (not title):
+        return jsonify({'msg': "A title is required"}), 400
+    
+    db = get_db()
+
+    image_id = None
+    if (image):
+        cursor: Cursor = db.execute(
+            'INSERT INTO images (author_id, data_url)'
+            ' VALUES (?, ?)',
+            ' RETURNING id',
+            (g.user['id'], image)
+        )
+        row = cursor.fetchone()
+
+        if (row is None):
+            return jsonify({'msg', "Failed saving image"}), 501
+        
+        (image_id, ) = row
+    
+    db.execute(
+        'INSERT INTO group (title, image_id, author_id)'
+        ' VALUES (?, ?, ?)',
+        (title, image_id, g.user['id'])
+    )
+    # print((title, (image_id if image else None), g.user['id']))
+    db.commit()
+
+    return jsonify({'msg': "Success"}), 201

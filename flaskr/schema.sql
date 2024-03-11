@@ -36,7 +36,7 @@ CREATE TABLE group (
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
   title TEXT NOT NULL
   author_id INTEGER NOT NULL,
-  image_id INTEGER,
+  image_id INTEGER NOT NULL,
   FOREIGN KEY (author_id) REFERENCES user (id),
   FOREIGN KEY (image_id) REFERENCES images (id),
 );
