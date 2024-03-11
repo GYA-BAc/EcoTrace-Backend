@@ -85,12 +85,30 @@ def create():
         
         (image_id, ) = row
     
-    db.execute(
+    cursor: Cursor = db.execute(
         'INSERT INTO group (title, image_id, author_id)'
-        ' VALUES (?, ?, ?)',
+        ' VALUES (?, ?, ?)'
+        ' RETURNING id',
         (title, image_id, g.user['id'])
     )
-    # print((title, (image_id if image else None), g.user['id']))
     db.commit()
 
+    group_id = cursor.fetchone()
+    # TODO: handle errors creating userGroup
+    create_userGroup(g.user['id'], group_id)
+
     return jsonify({'msg': "Success"}), 201
+
+
+
+def create_userGroup(user_id, group_id):
+
+    db = get_db()
+    db.execute(
+        'INSERT INTO userGoup (user_id, group_id)'
+        ' VALUES (?, ?)',
+        (user_id, group_id)
+    )
+    db.commit()
+
+    #TODO: handle edge cases where db fails, overlap, etc
