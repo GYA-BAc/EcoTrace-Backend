@@ -47,17 +47,6 @@ def fetchUserGroups():
     return jsonify([dict(_) for _ in groups]), 200
 
 
-def get_group(id):
-    group = get_db().execute(
-        'SELECT *'
-        ' FROM group g'
-        ' WHERE g.id = ?',
-        (id,)
-    ).fetchone()
-
-    return group
-
-
 @bp.route('/create', methods=['POST'])
 @auth.login_required
 def create():
@@ -99,6 +88,16 @@ def create():
 
     return jsonify({'msg': "Success"}), 201
 
+
+def get_group(id):
+    group = get_db().execute(
+        'SELECT *'
+        ' FROM group g'
+        ' WHERE g.id = ?',
+        (id,)
+    ).fetchone()
+
+    return group
 
 
 def create_userGroup(user_id, group_id):
