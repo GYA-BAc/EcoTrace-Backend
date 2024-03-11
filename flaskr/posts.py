@@ -83,7 +83,7 @@ def create():
         ' VALUES (?, ?, ?, ?)',
         (title, (body if body else None), (image_id if image else None), g.user['id'])
     )
-    print((title, (body if body else None), (image_id if image else None), g.user['id']))
+    # print((title, (body if body else None), (image_id if image else None), g.user['id']))
     db.commit()
 
     return jsonify({'msg': "Success"}), 201
