@@ -30,6 +30,7 @@ def fetch():
 def fetchUserGroups():
 
     username = request.json['username']
+    #TODO: user g.user['id'] if login required
 
     db = get_db()
 
