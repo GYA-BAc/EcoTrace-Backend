@@ -76,7 +76,7 @@ def create():
         (image_id, ) = row
     
     cursor: Cursor = db.execute(
-        'INSERT INTO group (title, image_id, author_id)'
+        'INSERT INTO groups (title, image_id, author_id)'
         ' VALUES (?, ?, ?)'
         ' RETURNING id',
         (title, image_id, g.user['id'])
@@ -93,7 +93,7 @@ def create():
 def get_group(id):
     group = get_db().execute(
         'SELECT *'
-        ' FROM group g'
+        ' FROM groups g'
         ' WHERE g.id = ?',
         (id,)
     ).fetchone()

@@ -15,6 +15,19 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 # this works:
 # curl --json "{\"username\":\"asdf\", \"password\":\"asdf\"}" http://127.0.0.1:5000/auth/register
 
+# decorator to check for login
+def login_required(view):
+    @functools.wraps(view)
+    def wrapped_view(**kwargs):
+        if g.user is None:
+            return jsonify({'msg': "Unauthorized"}), 401
+
+        return view(**kwargs)
+
+    return wrapped_view
+
+
+
 @bp.route('/register', methods=['POST'])
 def register():
 
@@ -76,22 +89,22 @@ def login():
     return jsonify({'msg': 'Success'}), 200
 
 
-@bp.route('/logout')
+@bp.route('/logout', methods=['GET'])
 def logout():
     session.clear()
     return jsonify({'msg': 'Success'}), 200
 
 
-# decorator to check for login
-def login_required(view):
-    @functools.wraps(view)
-    def wrapped_view(**kwargs):
-        if g.user is None:
-            return jsonify({'msg': "Unauthorized"}), 401
-
-        return view(**kwargs)
-
-    return wrapped_view
+@bp.route('/fetchUserData')
+@login_required
+def fetch_user_data():
+    print(g.user)
+    return jsonify(
+        {
+            'msg': 'Success',
+            'content': dict(g.user)
+        }
+    ), 200
 
 
 # @bp.route('/test')
