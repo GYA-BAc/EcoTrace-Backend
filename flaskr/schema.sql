@@ -1,7 +1,7 @@
 DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS post;
 DROP TABLE IF EXISTS images;
-DROP TABLE IF EXISTS group;
+DROP TABLE IF EXISTS groups;
 DROP TABLE IF EXISTS userGroup;
 
 
@@ -21,7 +21,7 @@ CREATE TABLE post (
   group_id INTEGER,
   FOREIGN KEY (author_id) REFERENCES user (id),
   FOREIGN KEY (image_id) REFERENCES images (id),
-  FOREIGN KEY (group_id) REFERENCES group (id)
+  FOREIGN KEY (group_id) REFERENCES groups (id)
 );
 
 CREATE TABLE images (
@@ -31,14 +31,14 @@ CREATE TABLE images (
   FOREIGN KEY (author_id) REFERENCES user (id)
 );
 
-CREATE TABLE group (
+CREATE TABLE groups (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  title TEXT NOT NULL
+  title TEXT NOT NULL,
   author_id INTEGER NOT NULL,
   image_id INTEGER NOT NULL,
   FOREIGN KEY (author_id) REFERENCES user (id),
-  FOREIGN KEY (image_id) REFERENCES images (id),
+  FOREIGN KEY (image_id) REFERENCES images (id)
 );
 
 -- relational tables
@@ -48,5 +48,5 @@ CREATE TABLE userGroup (
   group_id INTEGER,
   PRIMARY KEY (user_id, group_id),
   FOREIGN KEY (user_id) REFERENCES user (id),
-  FOREIGN KEY (group_id) REFERENCES group (id)
+  FOREIGN KEY (group_id) REFERENCES groups (id)
 );
