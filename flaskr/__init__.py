@@ -2,7 +2,7 @@ import os
 
 from flask import Flask
 
-#flask --app flaskr run --debug
+#flask --app flaskr run --debug --host=0.0.0.0
 
 def create_app(test_config=None):
     # create and configure the app
@@ -42,5 +42,8 @@ def create_app(test_config=None):
 
     from . import posts
     app.register_blueprint(posts.bp)
+
+    from . import groups
+    app.register_blueprint(groups.bp)
 
     return app
