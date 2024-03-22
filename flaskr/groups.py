@@ -46,6 +46,10 @@ def fetchLatestPostID():
     return jsonify(ret_id), 200
 
 
+@bp.route('/create', methods=['GET'])
+def fetchGroupPostRange():
+    pass
+
 
 
 
