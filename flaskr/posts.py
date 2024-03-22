@@ -8,6 +8,7 @@ from flaskr.db import get_db
 from sqlite3 import Cursor
 
 from . import auth
+from groups import get_group
 
 
 bp = Blueprint('posts', __name__, url_prefix='/posts')
@@ -54,14 +55,23 @@ def create():
     title = request.json['title']
     body = request.json['body']
     image = request.json['image']
+    group_id = request.json['group']
 
     if (not title):
         return jsonify({'msg': "A title is required"}), 400
     
     if (not body and not image):
         return jsonify({'msg': "Post body and or image required"}), 400
+    
+    if (not group_id):
+        return jsonify({'msg': "Post must be in a group"}), 400
 
     db = get_db()
+
+    # check if group exists
+    if (get_group(group_id) is None):
+        return jsonify({'msg': "Invalid group"}), 400
+    
 
     image_id = None
     if (image):
@@ -79,9 +89,9 @@ def create():
         (image_id, ) = row
     
     db.execute(
-        'INSERT INTO post (title, body, image_id, author_id)'
+        'INSERT INTO post (title, body, image_id, group_id, author_id)'
         ' VALUES (?, ?, ?, ?)',
-        (title, (body if body else None), (image_id if image else None), g.user['id'])
+        (title, (body if body else None), (image_id if image else None), group_id, g.user['id'])
     )
     # print((title, (body if body else None), (image_id if image else None), g.user['id']))
     db.commit()

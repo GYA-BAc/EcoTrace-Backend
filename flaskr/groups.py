@@ -25,6 +25,30 @@ def fetch():
     return jsonify(dict(group)), 200
 
 
+@bp.route('/create', methods=['GET'])
+def fetchLatestPostID():
+    id = request.json['id']
+    if (not id):
+        return jsonify({'msg', "No group id specified"}), 400
+
+    # check for group existence
+    group = get_group(id)
+    if (group is None):
+        return jsonify({'msg': "Group not found"}), 404
+    
+    # get latest post
+    db = get_db()
+    ret_id = db.execute('SELECT id FROM post ORDER BY created DESC LIMIT 1')
+
+    if (ret_id is None):
+        return jsonify({'msg': "Something went wrong"}), 500
+    
+    return jsonify(ret_id), 200
+
+
+
+
+
 @bp.route('/fetchUserGroups', methods=['GET'])
 @auth.login_required
 def fetchUserGroups():
@@ -64,7 +88,7 @@ def create():
     if (image):
         cursor: Cursor = db.execute(
             'INSERT INTO images (author_id, data_url)'
-            ' VALUES (?, ?)',
+            ' VALUES (?, ?)'
             ' RETURNING id',
             (g.user['id'], image)
         )
@@ -81,11 +105,11 @@ def create():
         ' RETURNING id',
         (title, image_id, g.user['id'])
     )
-    db.commit()
-
     group_id = cursor.fetchone()
+
+    db.commit()
     # TODO: handle errors creating userGroup
-    create_userGroup(g.user['id'], group_id)
+    create_userGroup(g.user['id'], group_id[0])
 
     return jsonify({'msg': "Success"}), 201
 
@@ -105,7 +129,7 @@ def create_userGroup(user_id, group_id):
 
     db = get_db()
     db.execute(
-        'INSERT INTO userGoup (user_id, group_id)'
+        'INSERT INTO userGroup (user_id, group_id)'
         ' VALUES (?, ?)',
         (user_id, group_id)
     )
