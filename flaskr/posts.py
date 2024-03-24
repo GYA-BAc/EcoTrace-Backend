@@ -8,7 +8,7 @@ from flaskr.db import get_db
 from sqlite3 import Cursor
 
 from . import auth
-from groups import get_group
+from . import groups
 
 
 bp = Blueprint('posts', __name__, url_prefix='/posts')
@@ -69,7 +69,7 @@ def create():
     db = get_db()
 
     # check if group exists
-    if (get_group(group_id) is None):
+    if (groups.get_group(group_id) is None):
         return jsonify({'msg': "Invalid group"}), 400
     
 
