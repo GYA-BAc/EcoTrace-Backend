@@ -25,7 +25,7 @@ def fetch():
     return jsonify(dict(group)), 200
 
 
-@bp.route('/create', methods=['GET'])
+@bp.route('/fetchLatestPostID', methods=['GET'])
 def fetchLatestPostID():
     id = request.json['id']
     if (not id):
@@ -43,7 +43,7 @@ def fetchLatestPostID():
     if (ret_id is None):
         return jsonify({'msg': "Something went wrong"}), 500
     
-    return jsonify(ret_id), 200
+    return jsonify([dict(_) for _ in ret_id]), 200
 
 
 @bp.route('/create', methods=['GET'])
