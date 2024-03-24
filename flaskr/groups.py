@@ -8,6 +8,7 @@ from flaskr.db import get_db
 from sqlite3 import Cursor
 
 from . import auth
+from . import posts
 
 
 bp = Blueprint('groups', __name__, url_prefix='/groups')
@@ -46,11 +47,36 @@ def fetchLatestPostID():
     return jsonify([dict(_) for _ in ret_id]), 200
 
 
-@bp.route('/create', methods=['GET'])
-def fetchGroupPostRange():
-    pass
+@bp.route('/fetchPostRange', methods=['GET'])
+def fetchPostRange():
+    id = request.json['id']
+    start_id = request.json['start_id']
+    requested_posts = request.json['requested_posts']
 
+    if (not id):
+        return jsonify({'msg', "No group id specified"}), 400
+    if (not start_id):
+        return jsonify({'msg', "No start post id specified"}), 400
+    if (not requested_posts):
+        return jsonify({'msg', "No number of requested posts specified"}), 400
+        
+    # check for group existence
+    group = get_group(id)
+    if (group is None):
+        return jsonify({'msg': "Group not found"}), 404
 
+    # check for post existence
+    post = posts.get_post(start_id)
+    if (post is None):
+        return jsonify({'msg': "Start post not found"}), 404
+    
+    start_date = post['created']
+
+    # get selected range
+    db = get_db()
+    ret = db.execute('SELECT id FROM post WHERE created < ?', (start_date,)).fetchmany(requested_posts)
+
+    return jsonify([dict(_) for _ in ret])    
 
 
 @bp.route('/fetchUserGroups', methods=['GET'])
