@@ -77,7 +77,7 @@ def create():
     if (image):
         cursor: Cursor = db.execute(
             'INSERT INTO images (author_id, data_url)'
-            ' VALUES (?, ?)',
+            ' VALUES (?, ?)'
             ' RETURNING id',
             (g.user['id'], image)
         )
