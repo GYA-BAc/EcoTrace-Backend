@@ -102,7 +102,7 @@ def fetch_user_data():
     return jsonify(
         {
             'msg': 'Success',
-            'content': dict(g.user)
+            'content': {'id': g.user['id'], 'username': g.user['username']}
         }
     ), 200
 
