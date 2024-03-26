@@ -71,6 +71,9 @@ def login():
 
     username = request.json['username']
     password = request.json['password']
+
+    # print(request.headers)
+    
     db = get_db()
     user = db.execute(
         'SELECT * FROM user WHERE username = ?', (username,)
