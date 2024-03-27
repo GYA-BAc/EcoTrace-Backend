@@ -13,9 +13,9 @@ from . import posts
 
 bp = Blueprint('groups', __name__, url_prefix='/groups')
 
-@bp.route('/fetch', methods=['GET'])
-def fetch():
-    id = request.json['id']
+@bp.route('fetch/<groupID>', methods=['GET'])
+def fetch(groupID):
+    id = groupID
     if (not id):
         return jsonify({'msg', "No group id specified"}), 400
 
@@ -26,9 +26,9 @@ def fetch():
     return jsonify(dict(group)), 200
 
 
-@bp.route('/fetchLatestPostID', methods=['GET'])
-def fetchLatestPostID():
-    id = request.json['id']
+@bp.route('fetchLatestPostID/<groupID>', methods=['GET'])
+def fetchLatestPostID(groupID):
+    id = groupID
     if (not id):
         return jsonify({'msg', "No group id specified"}), 400
 
@@ -47,11 +47,11 @@ def fetchLatestPostID():
     return jsonify([dict(_) for _ in ret_id]), 200
 
 
-@bp.route('/fetchPostRange', methods=['GET'])
-def fetchPostRange():
-    id = request.json['id']
-    start_id = request.json['start_id']
-    requested_posts = request.json['requested_posts']
+@bp.route('fetchPostRange/<groupID>', methods=['GET'])
+def fetchPostRange(groupID):
+    id = groupID
+    start_id = request.args['start_id']
+    requested_posts = request.args['requested_posts']
 
     if (not id):
         return jsonify({'msg', "No group id specified"}), 400
@@ -83,17 +83,10 @@ def fetchPostRange():
 @auth.login_required
 def fetchUserGroups():
 
-    username = request.json['username']
-    #TODO: user g.user['id'] if login required
+
+    user_id = g.user['id']
 
     db = get_db()
-
-    user_id = db.execute(
-        'SELECT * FROM user WHERE username = ?', (username,)
-    ).fetchone()['id']
-
-    if (not user_id):
-        return jsonify({'msg': "User not found"}), 404
 
     groups = db.execute(
         'SELECT * FROM userGroup WHERE user_id = ?', (user_id,)
