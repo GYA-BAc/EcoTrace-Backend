@@ -98,7 +98,7 @@ def logout():
     return jsonify({'msg': 'Success'}), 200
 
 
-@bp.route('/fetchUserData')
+@bp.route('/fetchUserData', methods=['GET'])
 @login_required
 def fetch_user_data():
     # print(request.headers)
