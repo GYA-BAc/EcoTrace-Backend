@@ -13,9 +13,9 @@ from . import groups
 
 bp = Blueprint('posts', __name__, url_prefix='/posts')
 
-@bp.route('/fetch', methods=['GET'])
-def fetch():
-    id = request.json['id']
+@bp.route('fetch/<postID>', methods=['GET'])
+def fetch(postID):
+    id = postID
     if (not id):
         return jsonify({'msg', "No post id specified"}), 400
 
@@ -26,10 +26,10 @@ def fetch():
     return jsonify(dict(post)), 200
 
 
-@bp.route('/fetchUserPosts', methods=['GET'])
-def fetchUserPosts():
+@bp.route('/fetchUserPosts/<authorID>', methods=['GET'])
+def fetchUserPosts(authorID):
 
-    author_id = request.json['id']
+    author_id = authorID
 
     db = get_db()
 
