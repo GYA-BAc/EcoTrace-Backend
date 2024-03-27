@@ -74,7 +74,7 @@ def fetchPostRange(groupID):
 
     # get selected range
     db = get_db()
-    ret = db.execute('SELECT id FROM post WHERE created < ? ORDER BY created DESC', (start_date,)).fetchmany(requested_posts)
+    ret = db.execute('SELECT id FROM post WHERE created < ? ORDER BY created DESC', (start_date,)).fetchmany(int(requested_posts))
 
     return jsonify([dict(_) for _ in ret])    
 
