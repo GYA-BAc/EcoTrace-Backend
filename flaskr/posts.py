@@ -29,16 +29,12 @@ def fetch():
 @bp.route('/fetchUserPosts', methods=['GET'])
 def fetchUserPosts():
 
-    username = request.json['username']
+    author_id = request.json['id']
 
     db = get_db()
 
-    author_id = db.execute(
-        'SELECT * FROM user WHERE username = ?', (username,)
-    ).fetchone()['id']
-
     if (not author_id):
-        return jsonify({'msg': "User not found"}), 404
+        return jsonify({'msg': "ID needed"}), 404
 
     posts = db.execute(
         'SELECT * FROM post WHERE author_id = ?', (author_id,)
