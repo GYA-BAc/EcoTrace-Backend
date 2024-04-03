@@ -48,13 +48,10 @@ def fetchUserPosts(authorID):
 @auth.login_required
 def create():
 
-    title = request.json['title']
     body = request.json['body']
     image = request.json['image']
     group_id = request.json['group_id']
 
-    if (not title):
-        return jsonify({'msg': "A title is required"}), 400
     
     if (not body and not image):
         return jsonify({'msg': "Post body and or image required"}), 400
@@ -85,11 +82,11 @@ def create():
         (image_id, ) = row
     
     db.execute(
-        'INSERT INTO post (title, body, image_id, group_id, author_id)'
-        ' VALUES (?, ?, ?, ?, ?)',
-        (title, (body if body else None), (image_id if image else None), group_id, g.user['id'])
+        'INSERT INTO post (body, image_id, group_id, author_id)'
+        ' VALUES (?, ?, ?, ?)',
+        ((body if body else None), (image_id if image else None), group_id, g.user['id'])
     )
-    # print((title, (body if body else None), (image_id if image else None), g.user['id']))
+    # print(((body if body else None), (image_id if image else None), g.user['id']))
     db.commit()
 
     return jsonify({'msg': "Success"}), 201
