@@ -6,7 +6,7 @@ from flask import (
     make_response
 )
 
-#flask --app flaskr run --debug --host=0.0.0.0
+#flask --app flaskr run --debug --host=0.0.0.0 --cert=adhoc
 
 def create_app(test_config=None):
     # create and configure the app
@@ -57,6 +57,7 @@ def create_app(test_config=None):
     ### CORS section
     @app.after_request
     def after_request_func(response):
+
         origin = request.headers.get('Origin')
         if request.method == 'OPTIONS':
             response = make_response()
@@ -74,6 +75,8 @@ def create_app(test_config=None):
 
         return response
     
-    
+    # fix chrome samesite cookie policy
+    app.config["SESSION_COOKIE_SAMESITE"] = "None"
+    app.config["SESSION_COOKIE_SECURE"] = True
 
     return app
