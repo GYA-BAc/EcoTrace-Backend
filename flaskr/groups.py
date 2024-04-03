@@ -44,7 +44,7 @@ def fetchLatestPostID(groupID):
     if (ret_id is None):
         return jsonify({'msg': "Something went wrong"}), 500
     
-    return jsonify([dict(_) for _ in ret_id]), 200
+    return jsonify(dict([_ for _ in ret_id][0])), 200
 
 
 @bp.route('fetchPostRange/<groupID>', methods=['GET'])
