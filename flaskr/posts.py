@@ -23,7 +23,7 @@ def fetch(postID):
     if (post is None):
         return jsonify({'msg': "Post not found"}), 404
 
-    return jsonify(dict(post)), 200
+    return jsonify(post), 200
 
 
 @bp.route('/fetchUserPosts/<authorID>', methods=['GET'])
@@ -106,17 +106,46 @@ def delete():
     return jsonify({'msg': 'Success'}), 200
 
 
-def get_post(id):
-    post = get_db().execute(
+def get_post(id) -> dict:
+    db = get_db()
+
+    post = db.execute(
         'SELECT *'
         ' FROM post p'
         ' WHERE p.id = ?',
         (id,)
     ).fetchone()
 
+    if (post is None):
+        return None
+
+    # populate username 
+    username = db.execute(
+        'SELECT username'
+        ' FROM user u'
+        ' WHERE u.id = ?',
+        (post['author_id'], )
+    ).fetchone()
+
+    # populate image
+    # NOTE: this could be a security vulnerability
+    data_url = db.execute(
+        'SELECT data_url'
+        ' FROM images i'
+        ' WHERE i.id = ?',
+        (post['image_id'], )
+    ).fetchone()
+
     #TODO ensure post's user exist
 
-    return post
+    return {
+        'id': post['id'],
+        'group_id': post['group_id'],
+        'created': post['created'],
+        'username': username[0],
+        'body': post['body'],
+        'data_url': data_url[0],
+    }
 
 
 
