@@ -2,6 +2,8 @@ DROP TABLE IF EXISTS user;
 DROP TABLE IF EXISTS post;
 DROP TABLE IF EXISTS images;
 DROP TABLE IF EXISTS groups;
+DROP TABLE IF EXISTS locations;
+
 DROP TABLE IF EXISTS userGroup;
 
 
@@ -38,6 +40,14 @@ CREATE TABLE groups (
   image_id INTEGER NOT NULL,
   FOREIGN KEY (author_id) REFERENCES user (id),
   FOREIGN KEY (image_id) REFERENCES images (id)
+);
+
+CREATE TABLE locations (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  latitude Decimal(8,6) NOT NULL,
+  longitude Decimal(9,6) NOT NULL,
+  post_id INTEGER NOT NULL,
+  FOREIGN KEY (post_id) REFERENCES post (id)
 );
 
 -- relational tables

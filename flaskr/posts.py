@@ -51,13 +51,18 @@ def create():
     body = request.json['body']
     image = request.json['image']
     group_id = request.json['group_id']
+    location = request.json['location']
 
+    print(location)
     
     if (not body and not image):
         return jsonify({'msg': "Post body and or image required"}), 400
     
     if (not group_id):
         return jsonify({'msg': "Post must be in a group"}), 400
+    
+    if (not location):
+        return jsonify({'msg': "Location data needed to create post"}), 400
 
     db = get_db()
 
@@ -68,24 +73,38 @@ def create():
 
     image_id = None
     if (image):
-        cursor: Cursor = db.execute(
+        row = db.execute(
             'INSERT INTO images (author_id, data_url)'
             ' VALUES (?, ?)'
             ' RETURNING id',
             (g.user['id'], image)
-        )
-        row = cursor.fetchone()
+        ).fetchone()
 
         if (row is None):
             return jsonify({'msg', "Failed saving image"}), 501
         
         (image_id, ) = row
     
-    db.execute(
+    post_id = None
+    row = db.execute(
         'INSERT INTO post (body, image_id, group_id, author_id)'
-        ' VALUES (?, ?, ?, ?)',
+        ' VALUES (?, ?, ?, ?)'
+        ' RETURNING id',
         ((body if body else None), (image_id if image else None), group_id, g.user['id'])
+    ).fetchone()
+
+    if (row is None):
+        return jsonify({'msg': "Failed saving post"})
+    
+    (post_id, ) = row
+    
+    # insert location
+    db.execute(
+        'INSERT INTO locations (latitude, longitude, post_id)'
+        ' VALUES (?, ?, ?)',
+        (location['latitude'], location['longitude'], post_id)
     )
+
     # print(((body if body else None), (image_id if image else None), g.user['id']))
     db.commit()
 
