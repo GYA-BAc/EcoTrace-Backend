@@ -75,6 +75,9 @@ def create_app(test_config=None):
         
         # bypass tunnel password for localtunnel
         response.headers.add('bypass-tunnel-reminder', 1)
+        
+        # for ngrok allow bypass warning
+        response.headers.add('Access-Control-Allow-Headers', 'ngrok-skip-browser-warning')
 
         return response
     
