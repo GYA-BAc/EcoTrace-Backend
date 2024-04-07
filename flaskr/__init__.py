@@ -72,6 +72,9 @@ def create_app(test_config=None):
             response.headers.add('Access-Control-Allow-Credentials', 'true')
             if origin:
                 response.headers.add('Access-Control-Allow-Origin', origin)
+        
+        # bypass tunnel password for localtunnel
+        response.headers.add('bypass-tunnel-reminder', 1)
 
         return response
     
