@@ -2,6 +2,7 @@ from flask import (
     Blueprint, 
     request, 
     jsonify,
+    json,
     g
 )
 from flaskr.db import get_db
@@ -99,8 +100,13 @@ def fetchUserGroups():
 @auth.login_required
 def create():
 
-    title = request.json['title']
-    image = request.json['image']
+    if (request.headers.get('Content-Type') == 'application/json'):
+        data = request.json['username']
+    else:
+        data = json.loads(request.data)
+
+    title = data['title']
+    image = data['image']
 
     if (not title):
         return jsonify({'msg': "A title is required"}), 400

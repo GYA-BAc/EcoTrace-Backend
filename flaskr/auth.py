@@ -4,7 +4,8 @@ from flask import (
     g, 
     request, 
     session, 
-    jsonify
+    jsonify,
+    json
 )
 from werkzeug.security import check_password_hash, generate_password_hash
 from flaskr.db import get_db
@@ -31,8 +32,14 @@ def login_required(view):
 @bp.route('/register', methods=['POST'])
 def register():
 
-    username = request.json['username']
-    password = request.json['password']
+    if (request.headers.get('Content-Type') == 'application/json'):
+        data = request.json['username']
+    else:
+        data = json.loads(request.data)
+
+    username = data['username']
+    password = data['password']
+
     db = get_db()
 
 
@@ -69,8 +76,13 @@ def load_logged_in_user():
 @bp.route('/login', methods=['POST'])
 def login():
 
-    username = request.json['username']
-    password = request.json['password']
+    if (request.headers.get('Content-Type') == 'application/json'):
+        data = request.json['username']
+    else:
+        data = json.loads(request.data)
+
+    username = data['username']
+    password = data['password']
 
     # print(request.headers)
     

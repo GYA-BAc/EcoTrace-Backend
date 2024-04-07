@@ -2,6 +2,7 @@ from flask import (
     Blueprint, 
     request, 
     jsonify,
+    json,
     g
 )
 from flaskr.db import get_db
@@ -48,10 +49,15 @@ def fetchUserPosts(authorID):
 @auth.login_required
 def create():
 
-    body = request.json['body']
-    image = request.json['image']
-    group_id = request.json['group_id']
-    location = request.json['location']
+    if (request.headers.get('Content-Type') == 'application/json'):
+        data = request.json['username']
+    else:
+        data = json.loads(request.data)
+
+    body = data['body']
+    image = data['image']
+    group_id = data['group_id']
+    location = data['location']
 
     print(location)
     
@@ -114,7 +120,13 @@ def create():
 @bp.route('/delete', methods=('POST',))
 @auth.login_required
 def delete():
-    id = request.json['id']
+
+    if (request.headers.get('Content-Type') == 'application/json'):
+        data = request.json['username']
+    else:
+        data = json.loads(request.data)
+
+    id = data['id']
 
     if (get_post(id) is None):
         return jsonify({'msg': 'Post not found'}), 404
