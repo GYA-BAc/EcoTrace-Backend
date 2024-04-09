@@ -33,7 +33,7 @@ def login_required(view):
 def register():
 
     if (request.headers.get('Content-Type') == 'application/json'):
-        data = request.json['username']
+        data = request.json
     else:
         data = json.loads(request.data)
 
@@ -77,7 +77,7 @@ def load_logged_in_user():
 def login():
 
     if (request.headers.get('Content-Type') == 'application/json'):
-        data = request.json['username']
+        data = request.json
     else:
         data = json.loads(request.data)
 

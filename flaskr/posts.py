@@ -50,7 +50,7 @@ def fetchUserPosts(authorID):
 def create():
 
     if (request.headers.get('Content-Type') == 'application/json'):
-        data = request.json['username']
+        data = request.json
     else:
         data = json.loads(request.data)
 
@@ -122,9 +122,13 @@ def create():
 def delete():
 
     if (request.headers.get('Content-Type') == 'application/json'):
-        data = request.json['username']
+        data = request.json
     else:
         data = json.loads(request.data)
+
+    # add temp perms check
+    if (data['key'] != 'SECRET'):
+        return jsonify({'msg': 'Unauthorized'}), 401
 
     id = data['id']
 
