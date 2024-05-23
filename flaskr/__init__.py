@@ -51,9 +51,6 @@ def create_app(test_config=None):
     app.register_blueprint(groups.bp)
 
 
-
-
-
     ### CORS section
     @app.after_request
     def after_request_func(response):
