@@ -75,11 +75,12 @@ def create_app(test_config=None):
         
         # for ngrok allow bypass warning
         response.headers.add('Access-Control-Allow-Headers', 'ngrok-skip-browser-warning')
-
         return response
     
     # fix chrome samesite cookie policy
     app.config["SESSION_COOKIE_SAMESITE"] = "None"
+
+        # comment when testing with http
     app.config["SESSION_COOKIE_SECURE"] = True
 
     return app
